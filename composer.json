@@ -13,6 +13,11 @@
             "TuxBoy\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests/"
+        }
+    },
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "http-interop/response-sender": "^1.0",
