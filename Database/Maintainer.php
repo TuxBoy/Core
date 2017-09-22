@@ -7,6 +7,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
 use TuxBoy\Annotation\Length;
+use TuxBoy\Annotation\Link;
 use TuxBoy\Annotation\Set;
 use TuxBoy\Builder\Builder;
 use TuxBoy\Builder\Namespaces;
@@ -155,15 +156,15 @@ class Maintainer
                 if (($type_name === '\DateTime') || ($type_name === 'DateTime')) {
                     $type_name = 'datetime';
                 }
-                if (!$reflectionAnnotation->getAnnotation('link') &&
+                if (!$reflectionAnnotation->getPropertyAnnotation(Link::class) &&
                     !in_array($type_name, AnnotationType::DEFAULT, true)
                 ) {
                     throw new AnnotationException('The annotation value does not exist ' . $type_name);
                 }
                 // Si la propriété à l'annotation link c'est une relation
-                if ($reflectionAnnotation->hasAnnotation('link')) {
+                if ($reflectionAnnotation->getPropertyAnnotation(Link::class)) {
                     // Récupère le type de relation passé en valeur du @link (belongsTo, hasMany..)
-                    $foreignType = $reflectionAnnotation->getAnnotation('link')->getValue();
+                    $foreignType = $reflectionAnnotation->getPropertyAnnotation(Link::class)->value;
                     if (!method_exists($this, $foreignType)) {
                         throw new MaintainerEcxeption('The relation type method does not exit.');
                     }
