@@ -1,0 +1,31 @@
+{
+    "name": "tuxboy/core",
+    "description": "Le core pour le framework TuxBoy-Framework",
+    "Licence": "MIT",
+    "authors": [
+        {
+            "name": "Benoît Mallo",
+            "email": "benoit.mallo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TuxBoy\\": "src/Core/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "http-interop/response-sender": "^1.0",
+        "nikic/fast-route": "^1.2",
+        "php-di/php-di": "^5.4",
+        "twig/twig": "^2.4",
+        "vlucas/phpdotenv": "^2.4",
+        "doctrine/dbal": "^2.6",
+        "filp/whoops": "^2.1",
+        "goaop/framework": "^2.0",
+        "mnapoli/dbal-schema": "^0.2.1",
+        "cocur/slugify": "^3.0",
+        "zendframework/zend-expressive-fastroute": "^2.1",
+        "cakephp/orm": "^3.5"
+    }
+}
