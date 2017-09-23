@@ -5,6 +5,7 @@ namespace TuxBoy\Twig;
 use TuxBoy\Entity;
 use TuxBoy\Form\Builder\EntityFormBuilder;
 use TuxBoy\Form\Builder\FormBuilder;
+use TuxBoy\Router\Router;
 
 class FormExtension extends \Twig_Extension
 {
@@ -14,10 +15,16 @@ class FormExtension extends \Twig_Extension
 	 */
 	private $entityFormBuilder;
 
-	public function __construct(EntityFormBuilder $entityFormBuilder)
+    /**
+     * @var Router
+     */
+    private $router;
+
+    public function __construct(EntityFormBuilder $entityFormBuilder, Router $router)
 	{
 		$this->entityFormBuilder = $entityFormBuilder;
-	}
+        $this->router = $router;
+    }
 
 	/**
      * @return \Twig_SimpleFunction[]
@@ -46,7 +53,8 @@ class FormExtension extends \Twig_Extension
 	 * @return string
 	 */
     public function getFormWithEntity(Entity $entity, ?string $path = null): string
-		{
-			return (string) $this->entityFormBuilder->generateForm($entity, $path);
-		}
+    {
+        $path = $path ? $this->router->generateUri($path) : $path;
+        return (string) $this->entityFormBuilder->generateForm($entity, $path);
+    }
 }

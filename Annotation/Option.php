@@ -26,4 +26,9 @@ class Option extends Annotation
 	 */
 	public $mendatory = true;
 
+    /**
+     * @var string
+     */
+	public $placeholder;
+
 }

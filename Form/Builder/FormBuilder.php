@@ -27,11 +27,11 @@ class FormBuilder
     }
 
     /**
-     * @param Element $element
+     * @param $element
      *
      * @return FormBuilder
      */
-    public function add(Element $element): self
+    public function add($element): self
     {
         $this->elements[] = $element;
 

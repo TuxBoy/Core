@@ -2,10 +2,14 @@
 
 namespace TuxBoy\Tools;
 
+use TuxBoy\Annotation\Option;
+
 trait HasName
 {
     /**
      * @var string
+     *
+     * @Option(placeholder="Nom")
      */
     public $name;
 

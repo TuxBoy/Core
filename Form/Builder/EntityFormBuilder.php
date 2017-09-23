@@ -5,6 +5,7 @@ use Doctrine\DBAL\Types\Type;
 use TuxBoy\Annotation\Option;
 use TuxBoy\Entity;
 use TuxBoy\Form\Button;
+use TuxBoy\Form\Element;
 use TuxBoy\Form\Input;
 use TuxBoy\Form\Textarea;
 use TuxBoy\ReflectionAnnotation;
@@ -46,6 +47,7 @@ class EntityFormBuilder
 		$this->formBuilder->openForm($action, 'POST');
 		foreach (array_keys(get_object_vars($entity)) as $property) {
 			$propertyAnnotation = new ReflectionAnnotation($entity, $property);
+			$this->formBuilder->add((new Element('div'))->setAttribute('class', 'form-group'));
 			if (
 				$propertyAnnotation->hasAnnotation('var')
 				&& $propertyAnnotation->getAnnotation('var')->getValue() === Type::STRING
@@ -55,12 +57,16 @@ class EntityFormBuilder
 					$value = $entity->$property;
 				}
 				$input = new Input($property, $value);
+				$input->setAttribute('class', 'form-control');
 				if ($propertyAnnotation->getPropertyAnnotation(Option::class)) {
 					$optionAnnoation = $propertyAnnotation->getPropertyAnnotation(Option::class);
 					$type = $optionAnnoation->type ? $optionAnnoation->type : Type::TEXT;
 					if ($optionAnnoation->mendatory) {
 						$input->setAttribute('required');
 					}
+					if ($optionAnnoation->placeholder) {
+					    $input->setAttribute('placeholder', $optionAnnoation->placeholder);
+                    }
 				}
 				else {
 					$type = Type::TEXT;
@@ -77,10 +83,15 @@ class EntityFormBuilder
 				if (property_exists(get_class($entity), $property) && $entity->$property) {
 					$value = $entity->$property;
 				}
-				$this->formBuilder->add((new Textarea($property, $value)));
+				$this->formBuilder->add((new Textarea($property, $value))->setAttribute('class', 'form-control'));
 			}
+            $this->formBuilder->add('</div>');
 		}
-		$this->formBuilder->add((new Button('Envoyer'))->setAttribute('type', 'submit'));
+		$this->formBuilder->add(
+		    (new Button('Envoyer'))
+                ->setAttribute('type', 'submit')
+                ->setAttribute('class', 'btn btn-primary')
+        );
 		return $this->formBuilder->build();
 	}
 
