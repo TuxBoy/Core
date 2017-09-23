@@ -24,7 +24,7 @@ class Option extends Annotation
 	 *
 	 * @var bool
 	 */
-	public $mendatory = true;
+	public $mandatory = true;
 
     /**
      * @var string

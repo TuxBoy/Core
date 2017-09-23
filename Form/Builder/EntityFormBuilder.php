@@ -53,15 +53,15 @@ class EntityFormBuilder
 				&& $propertyAnnotation->getAnnotation('var')->getValue() === Type::STRING
 			) {
 				$value = null;
-				if (property_exists(get_class($entity), $property) && $entity->$property) {
-					$value = $entity->$property;
+                if (property_exists(get_class($entity), $property) && $entity->get($property)) {
+					$value = $entity->get($property);
 				}
-				$input = new Input($property, $value);
+                $input = new Input($property, $value);
 				$input->setAttribute('class', 'form-control');
 				if ($propertyAnnotation->getPropertyAnnotation(Option::class)) {
 					$optionAnnoation = $propertyAnnotation->getPropertyAnnotation(Option::class);
 					$type = $optionAnnoation->type ? $optionAnnoation->type : Type::TEXT;
-					if ($optionAnnoation->mendatory) {
+					if ($optionAnnoation->mandatory) {
 						$input->setAttribute('required');
 					}
 					if ($optionAnnoation->placeholder) {
@@ -80,8 +80,8 @@ class EntityFormBuilder
 				&& $propertyAnnotation->getAnnotation('var')->getValue() === Type::TEXT
 			) {
 				$value = null;
-				if (property_exists(get_class($entity), $property) && $entity->$property) {
-					$value = $entity->$property;
+				if (property_exists(get_class($entity), $property) && $entity->get($property)) {
+					$value = $entity->get($property);
 				}
 				$this->formBuilder->add((new Textarea($property, $value))->setAttribute('class', 'form-control'));
 			}
