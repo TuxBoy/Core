@@ -9,7 +9,7 @@ trait HasName
     /**
      * @var string
      *
-     * @Option(placeholder="Nom")
+     * @Option(placeholder="Nom", mandatory=true)
      */
     public $name;
 
