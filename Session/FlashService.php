@@ -32,6 +32,16 @@ class FlashService
     }
 
     /**
+     * @param string $message
+     */
+    public function error(string $message): void
+    {
+        $flash = $this->session->get(self::FLASH, []);
+        $flash['error'] = $message;
+        $this->session->set(self::FLASH, $flash);
+    }
+
+    /**
      * @param string $type
      *
      * @return null|string
