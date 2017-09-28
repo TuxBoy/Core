@@ -1,7 +1,9 @@
 <?php
-
 namespace TuxBoy\Form;
 
+/**
+ * Class Attribute
+ */
 class Attribute
 {
     /**
@@ -12,29 +14,47 @@ class Attribute
     /**
      * @var null
      */
-    private $value;
+    public $value;
 
     public function __construct(?string $name = null, ?string $value = null)
     {
-        $this->name = $name;
-        $this->value = $value;
+        if (!is_null($name)) {
+            $this->name = $name;
+        }
+        if (!is_null($value)) {
+            $this->value = $value;
+        }
     }
 
     public function __toString()
     {
-        return $this->name . (null !== $this->value ? '="' . $this->value . '"' : '');
+        if ($this->getValue() === true) {
+            return $this->getName();
+        } elseif ($this->getValue() === false) {
+            return '';
+        } else {
+            return $this->name . (null !== $this->value ? '="' . $this->value . '"' : '');
+        }
     }
 
     /**
      * @return null|string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getValue()
+    public function getValue(): ?string
     {
         return $this->value;
+    }
+
+    /**
+     * @param null $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
     }
 }

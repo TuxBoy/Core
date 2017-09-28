@@ -41,8 +41,16 @@ class Element
      */
     public function __toString()
     {
+        if ($this->attributes) {
+            $class = $this->getAttribute('class');
+            if ($class && strpos($class->getValue(), ' ')) {
+                $classes = explode(' ', $class->getValue());
+                sort($classes);
+                $class->setValue(implode(' ', $classes));
+            }
+            ksort($this->attributes);
+        }
         $content = $this->getContent();
-
         return '<' . $this->name . ' ' . implode(' ', $this->attributes) . '>'
             . (($this->endTag || isset($content)) ? $content . '</' . $this->name . '>' : '');
     }
@@ -51,14 +59,54 @@ class Element
      * @param string|null $name
      * @param string|null $value
      *
-     * @return Element
+     * @return Attribute
      */
-    public function setAttribute(?string $name = null, ?string $value = null): self
+    public function setAttribute(?string $name = null, ?string $value = null): Attribute
     {
-        $attribute = new Attribute($name, $value);
-        $this->attributes[$attribute->getName()] = $attribute;
+        return $this->setAttributeNode(new Attribute($name, $value));
+    }
 
-        return $this;
+    /**
+     * @param Attribute $attribute
+     * @return Attribute
+     */
+    public function setAttributeNode(Attribute $attribute): Attribute
+    {
+        return $this->attributes[$attribute->getName()] = $attribute;
+    }
+
+    /**
+     * Ajoute un attribut classe s'il n'existe pas, sinon il ajoute juste la classe à la suite.
+     *
+     * @param string $className
+     * @return string
+     */
+    public function addClass(string $className) : string
+    {
+        $class = $this->getAttribute('class');
+        if (!isset($class)) {
+            return $this->setAttribute('class', $className);
+        } elseif (strpos(' ' . $class->getValue() . ' ', $className) === false) {
+            $class->value .= ' ' . $className;
+        }
+        return $class;
+    }
+
+    /**
+     * @param string $name
+     * @return Attribute
+     */
+    public function getAttribute(string $name): ?Attribute
+    {
+        return isset($this->attributes[$name]) ? $this->attributes[$name] : null;
+    }
+
+    /**
+     * @return Attribute[]
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 
     /**
@@ -67,6 +115,7 @@ class Element
     public function getContent()
     {
         if (is_array($this->content)) {
+            $content = '';
             if ($this->content) {
             } else {
                 $content = '';

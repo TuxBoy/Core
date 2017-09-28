@@ -9,6 +9,7 @@ use TuxBoy\Form\Element;
 use TuxBoy\Form\Input;
 use TuxBoy\Form\Textarea;
 use TuxBoy\ReflectionAnnotation;
+use TuxBoy\Session\SessionInterface;
 
 /**
  * Class EntityFormBuilder
@@ -21,15 +22,22 @@ class EntityFormBuilder
 	 */
 	private $formBuilder;
 
-	/**
-	 * EntityFormBuilder constructor.
-	 *
-	 * @param FormBuilder $formBuilder
-	 */
-	public function __construct(FormBuilder $formBuilder)
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * EntityFormBuilder constructor.
+     *
+     * @param FormBuilder $formBuilder
+     * @param SessionInterface $session
+     */
+	public function __construct(FormBuilder $formBuilder, SessionInterface $session)
 	{
 		$this->formBuilder = $formBuilder;
-	}
+        $this->session = $session;
+    }
 
 	/**
 	 * Génère un formulaire à partir d'une entity.
@@ -47,7 +55,10 @@ class EntityFormBuilder
 		$this->formBuilder->openForm($action, 'POST');
 		foreach (array_keys(get_object_vars($entity)) as $property) {
 			$propertyAnnotation = new ReflectionAnnotation($entity, $property);
-			$this->formBuilder->add((new Element('div'))->setAttribute('class', 'form-group'));
+			$divElement = new Element('div');
+			$divElement->addClass('form-group');
+			$this->formBuilder->add($divElement);
+			$errors = $this->getErrors();
 			if (
 				$propertyAnnotation->hasAnnotation('var')
 				&& $propertyAnnotation->getAnnotation('var')->getValue() === Type::STRING
@@ -56,8 +67,12 @@ class EntityFormBuilder
                 if (property_exists(get_class($entity), $property) && $entity->get($property)) {
 					$value = $entity->get($property);
 				}
+				$classAttribute = 'form-control';
+                if (isset($errors[$property])) {
+                    $classAttribute .= ' is-invalid';
+                }
                 $input = new Input($property, $value);
-				$input->setAttribute('class', 'form-control');
+				$input->setAttribute('class', $classAttribute);
 				if ($propertyAnnotation->getPropertyAnnotation(Option::class)) {
 					$optionAnnoation = $propertyAnnotation->getPropertyAnnotation(Option::class);
 					$type = $optionAnnoation->type ? $optionAnnoation->type : Type::TEXT;
@@ -83,16 +98,25 @@ class EntityFormBuilder
 				if (property_exists(get_class($entity), $property) && $entity->get($property)) {
 					$value = $entity->get($property);
 				}
-				$this->formBuilder->add((new Textarea($property, $value))->setAttribute('class', 'form-control'));
+				$textarea = new Textarea($property, $value);
+				$textarea->setAttribute('class', 'form-control');
+				$this->formBuilder->add($textarea);
 			}
             $this->formBuilder->add('</div>');
 		}
-		$this->formBuilder->add(
-		    (new Button('Envoyer'))
-                ->setAttribute('type', 'submit')
-                ->setAttribute('class', 'btn btn-primary')
-        );
+		$button = new Button('Envoyer');
+		$button->setAttribute('type', 'submit');
+        $button->addClass('btn btn-primary');
+		$this->formBuilder->add($button);
 		return $this->formBuilder->build();
 	}
+
+    /**
+     * @return array
+     */
+	private function getErrors(): array
+    {
+        return $this->session->get('errors') ?? [];
+    }
 
 }
