@@ -67,12 +67,14 @@ class EntityFormBuilder
                 if (property_exists(get_class($entity), $property) && $entity->get($property)) {
 					$value = $entity->get($property);
 				}
-				$classAttribute = 'form-control';
-                if (isset($errors[$property])) {
-                    $classAttribute .= ' is-invalid';
-                }
                 $input = new Input($property, $value);
-				$input->setAttribute('class', $classAttribute);
+                $input->addClass('form-control');
+                if (isset($errors[$property]) && !empty($errors[$property])) {
+                    $input->addClass('is-invalid');
+                    $this->session->delete('errors');
+                } else {
+                    $input->removeClass('is-invalid');
+                }
 				if ($propertyAnnotation->getPropertyAnnotation(Option::class)) {
 					$optionAnnoation = $propertyAnnotation->getPropertyAnnotation(Option::class);
 					$type = $optionAnnoation->type ? $optionAnnoation->type : Type::TEXT;

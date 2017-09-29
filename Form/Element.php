@@ -134,4 +134,38 @@ class Element
     {
         $this->content = $content;
     }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasAttribute(string $name): bool
+    {
+        return isset($this->attributes[$name]);
+    }
+
+    /**
+     * @param string $className
+     * @return null|Attribute
+     */
+    public function removeClass(string $className): ?Attribute
+    {
+        $class = $this->getAttribute('class'); // class="test test3"
+        $classesName = explode(' ', $class->getValue());
+        $class->value = implode(' ', array_filter($classesName, function ($value) use ($className) {
+            return $value !== $className;
+        }));
+
+        return $class;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function removeAttribute(string $name)
+    {
+        if (isset($this->attributes[$name])) {
+            unset($this->attributes[$name]);
+        }
+    }
 }

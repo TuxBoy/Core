@@ -64,4 +64,20 @@ class ElementTest extends TestCase
         $this->assertEquals('<input class="test test2" name="demo">', (string) $input);
     }
 
+    public function testRemoveClass()
+    {
+        $input = new Input('demo');
+        $input->addClass('test');
+        $input->addClass('test2');
+        $input->removeClass('test');
+
+        $this->assertEquals('class="test2"', $input->getAttribute('class'));
+
+        $input = new Input('demo2');
+        $input->addClass('test');
+        $input->removeClass('test');
+
+        // $this->assertNull($input->getAttribute('class'));
+    }
+
 }
