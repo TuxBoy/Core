@@ -115,7 +115,7 @@ class App
     {
         foreach ($applications as $application) {
             /* @var $application Application */
-            $application = Builder::create($applicationClass);
+            $application = Builder::create($application);
             $this->applications[] = $application;
         }
     }
