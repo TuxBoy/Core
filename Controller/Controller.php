@@ -35,8 +35,9 @@ class Controller
      * @param Twig_Environment   $view
      * @param FlashService       $flash
      */
-    public function __construct(ContainerInterface $container, Twig_Environment $view, FlashService $flash)
-    {
+    public function __construct(
+        ContainerInterface $container, Twig_Environment $view, FlashService $flash
+    ) {
         $this->container = $container;
         $this->view = $view;
         $this->flash = $flash;

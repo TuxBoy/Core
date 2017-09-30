@@ -72,11 +72,11 @@ return [
             return $kernel->getContainer();
         },
         'twig.path'       => \DI\add([string('{basepath}/res/views')]),
-        'twig.extensions' => [
-                get(RouterTwigExtension::class),
-                get(FlashExtension::class),
-                get(FormExtension::class)
-        ],
+        'twig.extensions' => add([
+            get(RouterTwigExtension::class),
+            get(FlashExtension::class),
+            get(FormExtension::class)
+        ]),
         'annotations' => add([
             Set::class,
                 Length::class,
