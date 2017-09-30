@@ -59,7 +59,11 @@ class EntityFormBuilder
 			$action = '#';
 		}
 		$this->formBuilder->openForm($action, 'POST');
-		foreach (array_keys(get_object_vars($entity)) as $property) {
+		$hiddenField = new Input('entity', get_class($entity));
+		$hiddenField->setAttribute('type', 'hidden');
+		$this->formBuilder->add($hiddenField);
+		foreach (array_keys(get_object_vars($entity)) as $property)
+		{
 			$divElement = new Element('div');
 			$divElement->addClass('form-group');
 			$this->formBuilder->add($divElement);
