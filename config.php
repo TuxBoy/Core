@@ -89,10 +89,10 @@ return [
         Router::class                    => object()->constructor(get(\FastRoute\RouteCollector::class)),
         Twig_Environment::class          => factory(TwigFactory::class),
         AspectContainer::class           => object(GoAspectContainer::class),
-        'goaop.aspect'                   => [
+        'goaop.aspect'                   => add([
             object(MaintainerAspect::class)
                 ->constructor(get(Maintainer::class), get('dev'), get('migration.auto'))
-        ],
+        ]),
         Maintainer::class       => object()->constructorParameter('database', get(Database::class)),
         HandlerInterface::class => object(Whoops::class),
         SessionInterface::class => object(PHPSession::class)

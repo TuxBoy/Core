@@ -21,7 +21,7 @@ class Router
      */
     public function __construct()
     {
-        $this->router = new FastRouteRouter();
+        $this->router = new FastRouteRouter;
     }
 
     /**
