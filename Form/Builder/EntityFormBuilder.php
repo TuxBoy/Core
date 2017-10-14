@@ -96,7 +96,11 @@ class EntityFormBuilder
             $element->addClass('is-invalid');
             $span = new Element('div', true);
             $span->addClass('invalid-feedback');
-            $span->setContent(implode(', ', $this->errors[$property]));
+            if (is_array($this->errors[$property])) {
+                $span->setContent(implode(', ', $this->errors[$property]));
+            } else {
+                $span->setContent($this->errors[$property]);
+            }
             $this->session->delete('errors');
         } else {
             $element->removeClass('is-invalid');

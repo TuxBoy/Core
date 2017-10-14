@@ -1,6 +1,7 @@
 <?php
 namespace TuxBoy\User;
 
+use TuxBoy\Annotation\Option;
 use TuxBoy\Entity;
 
 class User extends Entity
@@ -18,6 +19,8 @@ class User extends Entity
 
     /**
      * @var string
+     *
+     * @Option(type="password", placeholder="Mot de passe")
      */
     public $password;
 
