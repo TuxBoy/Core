@@ -32,7 +32,7 @@ class TwigFactory
             'debug' => $debug
         ]);
         if ($debug) {
-            $twig->addExtension(new DebugExtension);
+            $twig->addExtension(new \Twig_Extension_Debug);
         }
         $paths = $container->get('twig.path');
         foreach ($container->get('twig.extensions') as $extension) {
