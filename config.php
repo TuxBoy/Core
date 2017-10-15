@@ -34,7 +34,7 @@ use function DI\string;
 return [
     Priority::APP => [
         'dev'             => true,
-
+        'environement'    => env('ENV'),
         'migration.auto'  => true,
         'basepath'        => dirname(dirname(__DIR__)),
         'aspect.appDir'   => string('{basepath}/src/'),
@@ -79,9 +79,9 @@ return [
         ]),
         'annotations' => add([
             Set::class,
-                Length::class,
-                Option::class,
-                Link::class
+            Length::class,
+            Option::class,
+            Link::class
         ]),
         Std::class                       => object(),
         GroupCountBased::class           => object(),

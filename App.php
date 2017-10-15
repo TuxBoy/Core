@@ -58,8 +58,10 @@ class App
         $this->container = $this->container_builder->build();
 
         $kernel = $this->container->get(AspectKernel::class);
-        // Active le handle pour afficher les erreurs
-        $this->container->get(HandlerInterface::class)->handle();
+        // Active le handle pour afficher les erreurs si on est en mode dev
+        if ($this->container->get('environement') === 'dev') {
+            $this->container->get(HandlerInterface::class)->handle();
+        }
 
         foreach ($this->getContainer()->get('annotations') as $annotation) {
             AnnotationRegistry::loadAnnotationClass($annotation);
