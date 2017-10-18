@@ -59,7 +59,7 @@ class App
 
         $kernel = $this->container->get(AspectKernel::class);
         // Active le handle pour afficher les erreurs si on est en mode dev
-        if ($this->container->get('environement') === 'dev') {
+        if ($this->container->get('environement') === Environment::DEV) {
             $this->container->get(HandlerInterface::class)->handle();
         }
 
