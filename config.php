@@ -76,7 +76,7 @@ return [
             get(RouterTwigExtension::class),
             get(FlashExtension::class),
             get(FormExtension::class)
-        ]),
+                ]),
         'annotations' => add([
             Set::class,
             Length::class,

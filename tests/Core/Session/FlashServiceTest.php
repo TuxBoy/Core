@@ -32,5 +32,4 @@ class FlashServiceTest extends TestCase
         $this->assertEquals('Bravo', $this->flashService->get('success'));
         $this->assertEquals('Bravo', $this->flashService->get('success'));
     }
-
 }

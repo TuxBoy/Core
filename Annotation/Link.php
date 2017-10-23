@@ -12,6 +12,4 @@ use Doctrine\Common\Annotations\Annotation;
 class Link extends Annotation
 {
 
-
-
 }

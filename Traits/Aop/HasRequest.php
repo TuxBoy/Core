@@ -30,5 +30,4 @@ trait HasRequest
         }
         return $this->request;
     }
-
 }

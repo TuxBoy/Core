@@ -15,5 +15,4 @@ interface AuthServiceInterface
      * @return null|User
      */
     public function getUser(): ?User;
-
 }

@@ -10,10 +10,10 @@ use TuxBoy\Router\Router;
 class FormExtension extends \Twig_Extension
 {
 
-	/**
-	 * @var EntityFormBuilder
-	 */
-	private $entityFormBuilder;
+    /**
+     * @var EntityFormBuilder
+     */
+    private $entityFormBuilder;
 
     /**
      * @var Router
@@ -21,12 +21,12 @@ class FormExtension extends \Twig_Extension
     private $router;
 
     public function __construct(EntityFormBuilder $entityFormBuilder, Router $router)
-	{
-		$this->entityFormBuilder = $entityFormBuilder;
+    {
+        $this->entityFormBuilder = $entityFormBuilder;
         $this->router = $router;
     }
 
-	/**
+    /**
      * @return \Twig_SimpleFunction[]
      */
     public function getFunctions(): array
@@ -47,11 +47,11 @@ class FormExtension extends \Twig_Extension
         return (string) $formBuilder->build();
     }
 
-	/**
-	 * @param Entity      $entity
-	 * @param null|string $path
-	 * @return string
-	 */
+    /**
+     * @param Entity      $entity
+     * @param null|string $path
+     * @return string
+     */
     public function getFormWithEntity(Entity $entity, ?string $path = null): string
     {
         $path = $path ? $this->router->generateUri($path) : $path;

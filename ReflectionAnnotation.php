@@ -31,12 +31,12 @@ class ReflectionAnnotation
      */
     private $argument;
 
-	/**
-	 * @var null|string
-	 */
-	private $propertyName;
+    /**
+     * @var null|string
+     */
+    private $propertyName;
 
-	/**
+    /**
      * ReflectionAnnotation constructor.
      *
      * @param string|object $argument      Le nom de la classe ou l'object que l'on souhaite récupérer les annotations
@@ -45,12 +45,12 @@ class ReflectionAnnotation
     public function __construct($argument, string $propertyName = null)
     {
         $this->argument = new ReflectionClass($argument);
-				$this->propertyName = $propertyName;
-			// Si le property_name est null, alors on souhaite obtenir les annotations de la classe
+                $this->propertyName = $propertyName;
+            // Si le property_name est null, alors on souhaite obtenir les annotations de la classe
         $this->docComment = null === $this->propertyName
             ? $this->argument->getDocComment()
             : $this->argument->getProperty($this->propertyName)->getDocComment();
-		}
+    }
 
     /**
      * Récupère l'annotation de la proriété demandé.
@@ -149,14 +149,15 @@ class ReflectionAnnotation
         return (new AnnotationReader())->getClassAnnotation($this->argument, $annotationName);
     }
 
-	/**
-	 * @param string $annotationName
-	 * @return null|object
-	 */
+    /**
+     * @param string $annotationName
+     * @return null|object
+     */
     public function getPropertyAnnotation(string $annotationName)
-		{
-			return (new AnnotationReader)->getPropertyAnnotation(
-				new \ReflectionProperty($this->argument->getName(), $this->propertyName), $annotationName
-			);
-		}
+    {
+            return (new AnnotationReader)->getPropertyAnnotation(
+                new \ReflectionProperty($this->argument->getName(), $this->propertyName),
+                $annotationName
+            );
+    }
 }

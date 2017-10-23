@@ -12,5 +12,4 @@ class NotEntityException extends \Exception
         $message = "No defined entity";
         parent::__construct($message);
     }
-
 }

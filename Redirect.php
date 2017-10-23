@@ -10,5 +10,4 @@ class Redirect extends Response
     {
         parent::__construct(200, ['location' => $path]);
     }
-
 }

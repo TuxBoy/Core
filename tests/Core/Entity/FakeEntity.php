@@ -8,14 +8,13 @@ namespace Test\TuxBoy\Entity;
 class FakeEntity
 {
 
-	/**
-	 * @var string
-	 */
-	public $name;
+    /**
+     * @var string
+     */
+    public $name;
 
-	/**
-	 * @var longtext
-	 */
-	public $content;
-
+    /**
+     * @var longtext
+     */
+    public $content;
 }

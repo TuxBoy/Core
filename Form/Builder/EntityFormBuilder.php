@@ -17,10 +17,10 @@ use TuxBoy\Session\SessionInterface;
 class EntityFormBuilder
 {
 
-	/**
-	 * @var FormBuilder
-	 */
-	private $formBuilder;
+    /**
+     * @var FormBuilder
+     */
+    private $formBuilder;
 
     /**
      * @var SessionInterface
@@ -38,46 +38,45 @@ class EntityFormBuilder
      * @param FormBuilder $formBuilder
      * @param SessionInterface $session
      */
-	public function __construct(FormBuilder $formBuilder, SessionInterface $session)
-	{
-		$this->formBuilder = $formBuilder;
+    public function __construct(FormBuilder $formBuilder, SessionInterface $session)
+    {
+        $this->formBuilder = $formBuilder;
         $this->session = $session;
         $this->errors = $this->getErrors();
     }
 
-	/**
-	 * Génère un formulaire à partir d'une entity.
-	 *
-	 * @param Entity $entity
-	 * @param string|null $action
-	 * @return string
-	 */
-	public function generateForm(Entity $entity, ?string $action = null): string
-	{
-		// En gros ça va lire toutes les proriétés de l'entity afin de construire le formulaire
-		if (is_null($action)) {
-			$action = '#';
-		}
-		$this->formBuilder->openForm($action, 'POST');
-		foreach (array_keys(get_object_vars($entity)) as $property)
-		{
-			$divElement = new Element('div');
-			$divElement->addClass('form-group');
-			$this->formBuilder->add($divElement);
-			$this->addField($entity, $property);
+    /**
+     * Génère un formulaire à partir d'une entity.
+     *
+     * @param Entity $entity
+     * @param string|null $action
+     * @return string
+     */
+    public function generateForm(Entity $entity, ?string $action = null): string
+    {
+        // En gros ça va lire toutes les proriétés de l'entity afin de construire le formulaire
+        if (is_null($action)) {
+            $action = '#';
+        }
+        $this->formBuilder->openForm($action, 'POST');
+        foreach (array_keys(get_object_vars($entity)) as $property) {
+            $divElement = new Element('div');
+            $divElement->addClass('form-group');
+            $this->formBuilder->add($divElement);
+            $this->addField($entity, $property);
             $this->formBuilder->add('</div>');
-		}
-		$button = new Button('Envoyer');
-		$button->setAttribute('type', 'submit');
+        }
+        $button = new Button('Envoyer');
+        $button->setAttribute('type', 'submit');
         $button->addClass('btn btn-primary');
-		$this->formBuilder->add($button);
-		return $this->formBuilder->build();
-	}
+        $this->formBuilder->add($button);
+        return $this->formBuilder->build();
+    }
 
     /**
      * @return array
      */
-	private function getErrors(): array
+    private function getErrors(): array
     {
         return $this->session->get('errors') ?? [];
     }
@@ -115,8 +114,7 @@ class EntityFormBuilder
     private function addField(Entity $entity, string $property): void
     {
         $propertyAnnotation = new ReflectionAnnotation($entity, $property);
-        if (
-            $propertyAnnotation->hasAnnotation('var')
+        if ($propertyAnnotation->hasAnnotation('var')
             && $propertyAnnotation->getAnnotation('var')->getValue() === Type::STRING
         ) {
             $value = null;
@@ -134,8 +132,7 @@ class EntityFormBuilder
                 if ($optionAnnoation->placeholder) {
                     $input->setAttribute('placeholder', $optionAnnoation->placeholder);
                 }
-            }
-            else {
+            } else {
                 $type = Type::TEXT;
             }
             $input->setAttribute('type', $type);
@@ -143,8 +140,7 @@ class EntityFormBuilder
             $this->formBuilder->add($input . $span);
         }
 
-        if (
-            $propertyAnnotation->hasAnnotation('var')
+        if ($propertyAnnotation->hasAnnotation('var')
             && $propertyAnnotation->getAnnotation('var')->getValue() === Type::TEXT
         ) {
             $value = null;
@@ -166,5 +162,4 @@ class EntityFormBuilder
             $this->addErrorField($textarea, $property);
         }
     }
-
 }

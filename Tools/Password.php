@@ -27,5 +27,4 @@ class Password
     {
         return password_verify($password, $verifyPassword);
     }
-
 }

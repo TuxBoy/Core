@@ -4,7 +4,8 @@ namespace Test\TuxBoy\Concern;
 use TuxBoy\Concern\Current;
 use PHPUnit\Framework\TestCase;
 
-class FakeTest {
+class FakeTest
+{
 
     use Current;
 
@@ -14,10 +15,10 @@ class FakeTest {
     {
         $this->test += 1;
     }
-
 }
 
-class FakeWithoutCurrent {
+class FakeWithoutCurrent
+{
 
 }
 
@@ -40,5 +41,4 @@ class CurrentTest extends TestCase
         $this->assertEquals(1, $current1->test);
         $this->assertEquals(1, $current2->test);
     }
-
 }

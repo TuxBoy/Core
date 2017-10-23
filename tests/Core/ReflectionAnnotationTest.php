@@ -10,61 +10,62 @@ use ReflectionClass;
  *
  * @set posts
  */
-class FakePost {
+class FakePost
+{
 
-	/**
-	 * @length 20
-	 * @var string
-	 */
-	public $name;
+    /**
+     * @length 20
+     * @var string
+     */
+    public $name;
 
-	/**
-	 * @longtext
-	 */
-	public $content;
+    /**
+     * @longtext
+     */
+    public $content;
 }
 
 class ReflectionAnnotationTest extends TestCase
 {
 
-	/**
-	 * @param null|string $property_name
-	 * @return ReflectionAnnotation
-	 */
-	private function makeReflectionAnnotation(?string $property_name = null): ReflectionAnnotation
-	{
-		return new ReflectionAnnotation(FakePost::class, $property_name);
-	}
+    /**
+     * @param null|string $property_name
+     * @return ReflectionAnnotation
+     */
+    private function makeReflectionAnnotation(?string $property_name = null): ReflectionAnnotation
+    {
+        return new ReflectionAnnotation(FakePost::class, $property_name);
+    }
 
-	public function testGetAnnotationProperty()
-	{
-		$reflection_annotation = $this->makeReflectionAnnotation('name')->getAnnotation('var');
-		$this->assertEquals('var', $reflection_annotation->getName());
-		$this->assertEquals('string', $reflection_annotation->getValue());
-	}
+    public function testGetAnnotationProperty()
+    {
+        $reflection_annotation = $this->makeReflectionAnnotation('name')->getAnnotation('var');
+        $this->assertEquals('var', $reflection_annotation->getName());
+        $this->assertEquals('string', $reflection_annotation->getValue());
+    }
 
-	public function testGetAnnotationWithoutValue()
-	{
-		$reflection_annotation = $this->makeReflectionAnnotation('content')->getAnnotation('longtext');
-		$this->assertEquals('longtext', $reflection_annotation->getName());
-		$this->assertNull($reflection_annotation->getValue());
-	}
+    public function testGetAnnotationWithoutValue()
+    {
+        $reflection_annotation = $this->makeReflectionAnnotation('content')->getAnnotation('longtext');
+        $this->assertEquals('longtext', $reflection_annotation->getName());
+        $this->assertNull($reflection_annotation->getValue());
+    }
 
-	public function testGetAnnotationClass()
-	{
-		$reflection_annotation = $this->makeReflectionAnnotation()->getAnnotation('set');
-		$this->assertEquals('set', $reflection_annotation->getName());
-	}
+    public function testGetAnnotationClass()
+    {
+        $reflection_annotation = $this->makeReflectionAnnotation()->getAnnotation('set');
+        $this->assertEquals('set', $reflection_annotation->getName());
+    }
 
-	public function testHasAnnotation()
-	{
-		$reflection_annotation = $this->makeReflectionAnnotation('name');
-		$this->assertTrue($reflection_annotation->hasAnnotation('var'));
-	}
+    public function testHasAnnotation()
+    {
+        $reflection_annotation = $this->makeReflectionAnnotation('name');
+        $this->assertTrue($reflection_annotation->hasAnnotation('var'));
+    }
 
-	public function testHasNotAnnotation()
-	{
-		$reflection_annotation = $this->makeReflectionAnnotation('content');
-		$this->assertFalse($reflection_annotation->hasAnnotation('var'));
-	}
+    public function testHasNotAnnotation()
+    {
+        $reflection_annotation = $this->makeReflectionAnnotation('content');
+        $this->assertFalse($reflection_annotation->hasAnnotation('var'));
+    }
 }
