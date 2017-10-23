@@ -171,7 +171,7 @@ class Maintainer
                     $field = $this->$foreignType($schema, $table, $type_name);
                 }
 
-                if (!$this->isForeignKey($field)) {
+                if (!is_null($field) && !$this->isForeignKey($field)) {
                     $table->addColumn($field, $type_name, $options);
                 }
             } elseif (array_key_exists($field, $table->getColumns())) {
@@ -217,7 +217,7 @@ class Maintainer
      * @param Table  $table
      * @param string $className
      *
-     * @return string
+     * @return string Retourne le nom du champ
      */
     public function belongsTo(Schema $schema, Table $table, string $className): string
     {
@@ -242,5 +242,48 @@ class Maintainer
         }
 
         return $field;
+    }
+
+    /**
+     * @param Schema $schema
+     * @param Table  $table
+     * @param string $className
+     * @return string
+     */
+    public function belongsToMany(Schema $schema, Table $table, string $className): ?string
+    {
+            $className = str_replace('[]', '', $className);
+            $rightTable = $this->getTable($schema, $className);
+            $pivotTable = $table->getName() . '_' . $rightTable->getName();
+            $getPivotTable = $schema->hasTable($pivotTable)
+                ? $schema->getTable($pivotTable)
+                : $schema->createTable($pivotTable);
+            $leftField = $table->getName() . '_id';
+            $rightField = $getPivotTable->getName() . '_id';
+
+            $options['unsigned'] = true;
+            $options['notnull'] = false;
+            $this->createPrimaryKey($rightTable);
+        if (!$getPivotTable->hasColumn($leftField)) {
+            $getPivotTable->addColumn($leftField, 'integer', $options);
+        }
+        if (!$getPivotTable->hasColumn($rightField)) {
+            $getPivotTable->addColumn($rightField, 'integer', $options);
+        }
+            $getPivotTable->addForeignKeyConstraint(
+                $table,
+                [$leftField],
+                ['id'],
+                ['onDelete' => 'CASCADE'],
+                $leftField . '_contrain'
+            );
+            $getPivotTable->addForeignKeyConstraint(
+                $rightTable,
+                [$rightField],
+                ['id'],
+                ['onDelete' => 'CASCADE'],
+                $rightField . '_contrain'
+            );
+            return null;
     }
 }
