@@ -22,6 +22,7 @@ use TuxBoy\Session\SessionInterface;
 use TuxBoy\Tools\Whoops;
 use TuxBoy\Twig\FlashExtension;
 use TuxBoy\Twig\FormExtension;
+use TuxBoy\Twig\MenuExtension;
 use TuxBoy\Twig\RouterTwigExtension;
 use TuxBoy\Twig\TwigFactory;
 use function DI\add;
@@ -75,8 +76,9 @@ return [
         'twig.extensions' => add([
             get(RouterTwigExtension::class),
             get(FlashExtension::class),
-            get(FormExtension::class)
-                ]),
+            get(FormExtension::class),
+            get(MenuExtension::class)
+        ]),
         'annotations' => add([
             Set::class,
             Length::class,
