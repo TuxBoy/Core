@@ -119,6 +119,7 @@ class EntityFormBuilder
             ->execute()->fetchAll(\PDO::FETCH_CLASS, get_class($object));
         $data = [];
         foreach ($results as $result) {
+            /** @var $result Entity */
             $data[$result->get('id')] = (string) $result;
         }
         return $data;
