@@ -1,12 +1,17 @@
 <?php
 namespace TuxBoy\Form\Builder;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use TuxBoy\Annotation\Option;
+use TuxBoy\Annotation\Set;
+use TuxBoy\Builder\Builder;
+use TuxBoy\Builder\Namespaces;
 use TuxBoy\Entity;
 use TuxBoy\Form\Button;
 use TuxBoy\Form\Element;
 use TuxBoy\Form\Input;
+use TuxBoy\Form\Select;
 use TuxBoy\Form\Textarea;
 use TuxBoy\ReflectionAnnotation;
 use TuxBoy\Session\SessionInterface;
@@ -33,16 +38,23 @@ class EntityFormBuilder
     private $errors = [];
 
     /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
      * EntityFormBuilder constructor.
      *
      * @param FormBuilder $formBuilder
      * @param SessionInterface $session
+     * @param Connection $connection
      */
-    public function __construct(FormBuilder $formBuilder, SessionInterface $session)
+    public function __construct(FormBuilder $formBuilder, SessionInterface $session, Connection $connection)
     {
         $this->formBuilder = $formBuilder;
         $this->session = $session;
         $this->errors = $this->getErrors();
+        $this->connection = $connection;
     }
 
     /**
@@ -64,6 +76,7 @@ class EntityFormBuilder
             $divElement->addClass('form-group');
             $this->formBuilder->add($divElement);
             $this->addField($entity, $property);
+            $this->addObjectField($entity, $property);
             $this->formBuilder->add('</div>');
         }
         $button = new Button('Envoyer');
@@ -71,6 +84,44 @@ class EntityFormBuilder
         $button->addClass('btn btn-primary');
         $this->formBuilder->add($button);
         return $this->formBuilder->build();
+    }
+
+    /**
+     * @param Entity $entity
+     * @param string $property
+     */
+    private function addObjectField(Entity $entity, string $property): void
+    {
+        $propertyAnnotation = new ReflectionAnnotation($entity, $property);
+        $annotationValue    = $propertyAnnotation->getAnnotation('var')->getValue();
+        if (!in_array($annotationValue, [Type::STRING, Type::TEXT, Type::INTEGER])) {
+            $object = Builder::create($annotationValue);
+            if (is_a($object, Entity::class)) {
+                $fieldName = mb_strtolower(Namespaces::shortClassName($object)) . '_id';
+                $data      = $this->getDataToList($object);
+                $select    = new Select($fieldName, $data);
+                $select->addClass('form-control');
+                $this->formBuilder->add($select);
+            }
+        }
+    }
+
+    /**
+     * @param $object
+     * @return array
+     */
+    private function getDataToList($object): array
+    {
+        $annotationForeign = new ReflectionAnnotation($object);
+        $results = $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from($annotationForeign->getClassAnnotation(Set::class)->tableName)
+            ->execute()->fetchAll(\PDO::FETCH_CLASS, get_class($object));
+        $data = [];
+        foreach ($results as $result) {
+            $data[$result->get('id')] = (string) $result;
+        }
+        return $data;
     }
 
     /**
