@@ -12,7 +12,8 @@ class BootstrapMenu extends Menu
      */
     public function build(Router $router): string
     {
-        $this->setSurroundTag('li', 'nav-link');
+        $this->setSurroundTag('li');
+        $this->setSurroundClassName('nav-item');
         return $this->surroundLink(
             '<a class="nav-link" href="'. $router->generateUri($this->getPath()) .'">'. $this->getLabel() .'</a>'
         );

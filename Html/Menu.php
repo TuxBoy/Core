@@ -25,6 +25,11 @@ class Menu implements MenuInterface
     private $surroundTag = 'li';
 
     /**
+     * @var string|string[]
+     */
+    private $surroundClassName;
+
+    /**
      * @var int
      */
     private $order;
@@ -63,7 +68,7 @@ class Menu implements MenuInterface
         if (is_null($this->surroundTag)) {
             return $link;
         }
-        return '<'. $this->surroundTag .'>' . $link . '<' . $this->surroundTag . '/>';
+        return '<'. $this->surroundTag . ' ' . $this->getSurroundClassName() . '>' . $link . '<' . $this->surroundTag . '/>';
     }
 
     /**
@@ -86,10 +91,32 @@ class Menu implements MenuInterface
     }
 
     /**
+     * @param string|string[] $className
+     */
+    public function setSurroundClassName($className)
+    {
+        $this->surroundClassName = $className;
+    }
+
+    /**
      * @return int|null
      */
     public function getOrder(): ?int
     {
         return $this->order;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSurroundClassName(): string
+    {
+        if (!$this->surroundClassName) {
+            return '';
+        }
+        if (!is_array($this->surroundClassName)) {
+            $this->surroundClassName = [$this->surroundClassName];
+        }
+        return 'class="'. join(' ', $this->surroundClassName) .'"';
     }
 }
