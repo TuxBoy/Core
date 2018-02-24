@@ -95,7 +95,8 @@ class EntityFormBuilder
         $propertyAnnotation = new ReflectionAnnotation($entity, $property);
         $annotationValue    = $propertyAnnotation->getAnnotation('var')->getValue();
         if (!in_array($annotationValue, [Type::STRING, Type::TEXT, Type::INTEGER])) {
-            $object = Builder::create($annotationValue);
+            $annotationValue = str_replace('[]', '', $annotationValue);
+            $object          = Builder::create($annotationValue);
             if (is_a($object, Entity::class)) {
                 $fieldName = mb_strtolower(Namespaces::shortClassName($object)) . '_id';
                 $data      = $this->getDataToList($object);
