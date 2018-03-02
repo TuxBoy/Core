@@ -68,13 +68,16 @@ class Maintainer
      * Exécute la nouvelle version du schema définie dans schemaDefinition.
      *
      * @param string $entity
-     * @param bool   $force  Si true ça exécute la requête sinon ça on esite que la BDD est à jour
+     * @param bool $force Si true ça exécute la requête sinon ça on esite que la BDD est à jour
+     * @throws AnnotationException
+     * @throws MaintainerEcxeption
+     * @throws \Exception
      */
     public function updateTable(string $entity, bool $force = true): void
     {
         $currentSchema = $this->database->connection->getSchemaManager()->createSchema();
-        $newSchema = clone $currentSchema;
-        $schema = $this->schemaDefinition($newSchema, $entity);
+        $newSchema     = clone $currentSchema;
+        $schema        = $this->schemaDefinition($newSchema, $entity);
         // Compare le newSchema et le currentSchema afin de savoir s'il doit CREATE ou ALTER
         $migrationQueries = $currentSchema->getMigrateToSql($schema, $this->database->connection->getDatabasePlatform());
         $this->database->connection->transactional(function () use ($migrationQueries, $force) {
@@ -95,14 +98,15 @@ class Maintainer
      * @throws DatabaseException
      *
      * @return Table
+     * @throws \Doctrine\DBAL\Schema\SchemaException
      */
     private function getTable(Schema $schema, string $entity): Table
     {
-        $annotion = new ReflectionAnnotation($entity);
-        if (!$annotion->getClassAnnotation(Set::class)->tableName) {
+        $annotation = new ReflectionAnnotation($entity);
+        if (!$annotation->getClassAnnotation(Set::class)->tableName) {
             throw new DatabaseException('Not table name defined');
         }
-        $setTable = $annotion->getClassAnnotation(Set::class)->tableName;
+        $setTable = $annotation->getClassAnnotation(Set::class)->tableName;
 
         return $schema->hasTable($setTable)
             ? $schema->getTable($setTable)
@@ -132,10 +136,12 @@ class Maintainer
      * @param Schema $schema Le nouveau schema
      * @param string $entity
      *
-     * @throws AnnotationException
-     * @throws MaintainerEcxeption
-     *
      * @return Schema
+     * @throws AnnotationException
+     * @throws DatabaseException
+     * @throws MaintainerEcxeption
+     * @throws \Doctrine\DBAL\Schema\SchemaException
+     * @throws \Exception
      */
     public function schemaDefinition(Schema $schema, string $entity): Schema
     {
@@ -153,7 +159,7 @@ class Maintainer
                 $options['length'] = 255;
             }
             if (!array_key_exists($field, $table->getColumns())) {
-                if (($type_name === '\DateTime') || ($type_name === 'DateTime')) {
+                if (($type_name === '\DateTime') || ($type_name === \DateTime::class)) {
                     $type_name = 'datetime';
                 }
                 if (!$reflectionAnnotation->getPropertyAnnotation(Link::class) &&
@@ -214,10 +220,12 @@ class Maintainer
      * en cascade et met la champ en index.
      *
      * @param Schema $schema
-     * @param Table  $table
+     * @param Table $table
      * @param string $className
      *
      * @return string Retourne le nom du champ
+     * @throws DatabaseException
+     * @throws \Doctrine\DBAL\Schema\SchemaException
      */
     public function belongsTo(Schema $schema, Table $table, string $className): string
     {
@@ -246,9 +254,11 @@ class Maintainer
 
     /**
      * @param Schema $schema
-     * @param Table  $table
+     * @param Table $table
      * @param string $className
      * @return string
+     * @throws DatabaseException
+     * @throws \Doctrine\DBAL\Schema\SchemaException
      */
     public function belongsToMany(Schema $schema, Table $table, string $className): ?string
     {
