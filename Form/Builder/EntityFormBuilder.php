@@ -52,18 +52,19 @@ class EntityFormBuilder
     public function __construct(FormBuilder $formBuilder, SessionInterface $session, Connection $connection)
     {
         $this->formBuilder = $formBuilder;
-        $this->session = $session;
-        $this->errors = $this->getErrors();
-        $this->connection = $connection;
+        $this->session     = $session;
+        $this->errors      = $this->getErrors();
+        $this->connection  = $connection;
     }
 
-    /**
-     * Génère un formulaire à partir d'une entity.
-     *
-     * @param Entity $entity
-     * @param string|null $action
-     * @return string
-     */
+		/**
+		 * Génère un formulaire à partir d'une entity.
+		 *
+		 * @param Entity $entity
+		 * @param string|null $action
+		 * @return string
+		 * @throws \Exception
+		 */
     public function generateForm(Entity $entity, ?string $action = null): string
     {
         // En gros ça va lire toutes les proriétés de l'entity afin de construire le formulaire
@@ -86,10 +87,11 @@ class EntityFormBuilder
         return $this->formBuilder->build();
     }
 
-    /**
-     * @param Entity $entity
-     * @param string $property
-     */
+		/**
+		 * @param Entity $entity
+		 * @param string $property
+		 * @throws \Exception
+		 */
     private function addObjectField(Entity $entity, string $property): void
     {
         $propertyAnnotation = new ReflectionAnnotation($entity, $property);
@@ -160,10 +162,11 @@ class EntityFormBuilder
         return $span;
     }
 
-    /**
-     * @param Entity $entity
-     * @param string $property
-     */
+		/**
+		 * @param Entity $entity
+		 * @param string $property
+		 * @throws \Exception
+		 */
     private function addField(Entity $entity, string $property): void
     {
         $propertyAnnotation = new ReflectionAnnotation($entity, $property);
@@ -177,13 +180,16 @@ class EntityFormBuilder
             $input = new Input($property, $value);
             $input->addClass('form-control');
             if ($propertyAnnotation->getPropertyAnnotation(Option::class)) {
-                $optionAnnoation = $propertyAnnotation->getPropertyAnnotation(Option::class);
-                $type = $optionAnnoation->type ? $optionAnnoation->type : Type::TEXT;
-                if ($optionAnnoation->mandatory) {
+                $optionAnnotation = $propertyAnnotation->getPropertyAnnotation(Option::class);
+                $type             = $optionAnnotation->type ? $optionAnnotation->type : Type::TEXT;
+                if ($optionAnnotation->mandatory) {
                     $input->setAttribute('required');
                 }
-                if ($optionAnnoation->placeholder) {
-                    $input->setAttribute('placeholder', $optionAnnoation->placeholder);
+                if ($optionAnnotation->placeholder) {
+                    $input->setAttribute('placeholder', $optionAnnotation->placeholder);
+                }
+                if ($optionAnnotation->default) {
+                    $input->setAttribute('value', $optionAnnotation->default);
                 }
             } else {
                 $type = Type::TEXT;

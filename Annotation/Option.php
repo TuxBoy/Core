@@ -12,15 +12,22 @@ use Doctrine\Common\Annotations\Annotation;
 class Option extends Annotation
 {
 
+		/**
+		 * Default value of field
+		 *
+		 * @var string|integer
+		 */
+		public $default;
+
     /**
-     * Le type du champ (email, password)
+     * Field type (email, password)
      *
      * @var string
      */
     public $type;
 
     /**
-     * True si le champ est obligatoire on pas.
+     * true field is mandatory.
      *
      * @var bool
      */
