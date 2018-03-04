@@ -3,17 +3,19 @@ namespace TuxBoy\User;
 
 use TuxBoy\Annotation\Option;
 use TuxBoy\Entity;
+use TuxBoy\Tools\Password;
 
 class User extends Entity
 {
 
     /**
-     * @var int
+     * @var integer
      */
     public $id;
 
     /**
      * @var string
+		 * @Option(placeholder="Nom d'utilisateur")
      */
     public $username;
 
@@ -26,13 +28,14 @@ class User extends Entity
 
     /**
      * @var string
+		 * @Option(placeholder="Le role", type="hidden", default="member")
      */
     public $role;
 
     /**
      * @return string
      */
-    public function getPassword(): string
+    public function _getPassword(): ?string
     {
         return $this->password;
     }
@@ -40,9 +43,9 @@ class User extends Entity
     /**
      * @param string $password
      */
-    public function setPassword(string $password)
+    protected function _setPassword(string $password)
     {
-        $this->password = $password;
+        $this->password = Password::encypt($password);
     }
 
     /**
