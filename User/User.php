@@ -33,19 +33,20 @@ class User extends Entity
     public $role;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function _getPassword(): ?string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @param string $password
-     */
+		/**
+		 * @param string $password
+		 * @return bool|string
+		 */
     protected function _setPassword(string $password)
     {
-        $this->password = Password::encypt($password);
+        return Password::encypt($password);
     }
 
     /**
